@@ -13,7 +13,7 @@ setup('authenticate', async ({ page }) => {
     //
     // Sometimes login flow sets cookies in the process of several redirects.
     // Wait for the final URL to ensure that the cookies are actually set.
-    //await page.waitForURL('https://topface.com/');
+    // await page.waitForURL('https://topface.com/');
     // Alternatively, you can wait until the page reaches a state where all cookies are set.
     await expect(page.locator('//a[@id="profile_link_rd18"]')).toBeVisible();
     // End of authentication steps.

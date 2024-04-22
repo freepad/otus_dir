@@ -18,7 +18,8 @@
     "allure": "allure serve allure-results",
     "allure:ci": "allure generate allure-results --clean",
     "allure:ci:show": "allure open allure-report",
-    "wdio": "wdio run ./wdio.conf.js"
+    "wdio": "wdio run ./wdio.conf.js",
+    "test:e2e:ci": "playwright test"
   },
   "author": "Olga Mihaleva",
   "license": "MIT",

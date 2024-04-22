@@ -1,5 +1,3 @@
-const { expect } = require('@playwright/test');
-
 exports.HandwrittnerLoginPage = class HandwrittnerLoginPage {
 
   /**
@@ -26,7 +24,7 @@ exports.HandwrittnerLoginPage = class HandwrittnerLoginPage {
   async login(username, password) {
     await this.emailInput.fill(username);
     await this.passwordInput.fill(password);
-    //await this.recaptchaCheckbox.click();
+    // await this.recaptchaCheckbox.click();
     await this.enterButton.click();
   }
 

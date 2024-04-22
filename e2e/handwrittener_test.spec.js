@@ -1,26 +1,39 @@
-const { test, expect } = require('@playwright/test');
-const { HandwrittnerLoginPage } = require('../pages/loginPage');
-const { ForgotPasswordPage } = require('../pages/forgotpasswordPage');
-const exp = require('constants');
+import { test, expect } from '@playwright/test';
+import { HandwrittnerLoginPage } from '../pages/loginPage';
+import { ForgotPasswordPage } from '../pages/forgotpasswordPage';
 
 // Запускает тесты последовательно в рамках одного файла
 test.describe.configure({ mode: 'serial' });
 
-test('Ошибка при авторизации без каптчи на Handwrittner', async ({ page }) => {
-  const HandwrittnerLogin = new HandwrittnerLoginPage(page); //вопрос может лучше вынести создание перед всеми тестами, а не прописывать в каждом тесте?
+let page;
+
+test.beforeAll(async ({ browser }) => {
+  page = await browser.newPage();
+});
+
+test.afterAll(async () => {
+  await page.close();
+});
+
+test('Ошибка при авторизации без каптчи на Handwrittner', async () => {
+  const HandwrittnerLogin = new HandwrittnerLoginPage(page);
   await HandwrittnerLogin.open();
-  await HandwrittnerLogin.login('olgabathory1560@yandex.ru', '5w6u_W#fSk5$2BX'); //вопрос как безопасно хранить креды?
+  await HandwrittnerLogin.login(
+    // иногда можно и напрямую, но обычно лучше в файле `config.js` скрыть
+    process.env.TEST_UI_LOGIN,
+    process.env.TEST_UI_PASSWORD
+  );
   await expect(page.locator('//div[@class="error"]')).toBeVisible();
 });
 
-test("Открытие экрана регистрации со страницы логина", async ({page}) => { 
+test("Открытие экрана регистрации со страницы логина", async () => { 
   const HandwrittnerLogin = new HandwrittnerLoginPage(page);
- // await HandwrittnerLogin.open();
+  await HandwrittnerLogin.open();
   await HandwrittnerLogin.openRegistration();
   await expect(page).toHaveURL(/reg/);
 })
 
-test("Восстановление пароля", async ({page}) => {
+test("Восстановление пароля", async () => {
 const HandwrittnerLogin = new HandwrittnerLoginPage(page);
 await HandwrittnerLogin.open(); 
 await HandwrittnerLogin.forgotpasswordclick();
@@ -28,7 +41,7 @@ await expect(page).toHaveURL(/forgotpassword/);
 })
 
 
-test("Ошибка при восстановлении пароля - 'Введите email'", async ({page}) => {
+test("Ошибка при восстановлении пароля - 'Введите email'", async () => {
   const PasswordPage = new ForgotPasswordPage(page);
   await PasswordPage.open();
   await expect(PasswordPage.mainText).toHaveText('Восстановление пароля');
@@ -39,7 +52,7 @@ test("Ошибка при восстановлении пароля - 'Введ�
 })
 
 
-test("Успешный запрос восстановления пароля", async ({page}) => { 
+test("Успешный запрос восстановления пароля", async () => { 
   const PasswordPage = new ForgotPasswordPage(page);
   await PasswordPage.open(); 
   await PasswordPage.enterEmail('test@mail.ru');
